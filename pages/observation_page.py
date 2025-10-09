@@ -4,6 +4,7 @@ from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton,
                             QGroupBox, QGridLayout)
 from PyQt6.QtCore import QTimer, Qt
 from PyQt6.QtGui import QIcon, QPixmap
+from pages.utils.paths import resource_path
 
 class ObservationPage(QWidget):
     def __init__(self, switch_page):
@@ -72,7 +73,8 @@ class ObservationPage(QWidget):
     def load_config(self):
         """Load button configuration from config.json"""
         try:
-            with open("config.json", "r") as f:
+            config_path = resource_path("config.json")
+            with open(config_path, "r") as f:
                 return json.load(f)
         except (FileNotFoundError, json.JSONDecodeError, KeyError):
             QMessageBox.critical(self, "Error", "Could not load configuration.")
@@ -92,7 +94,9 @@ class ObservationPage(QWidget):
         image_path = button_data.get("image", "")
         if image_path:
             try:
-                pixmap = QPixmap(image_path)
+                # Use resource_path to make the path PyInstaller-safe
+                full_image_path = resource_path(image_path)
+                pixmap = QPixmap(full_image_path)
                 if not pixmap.isNull():
                     # Scale image to fit button (leave some space for text)
                     scaled_pixmap = pixmap.scaled(40, 40, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
@@ -100,7 +104,7 @@ class ObservationPage(QWidget):
                     btn.setIcon(icon)
                     btn.setIconSize(scaled_pixmap.size())
             except Exception as e:
-                print(f"Could not load image {image_path}: {e}")
+                print(f"Could not load image {full_image_path}: {e}")
         
         # Apply color to button background
         btn.setStyleSheet(f"QPushButton {{ background-color: {color}; color: white; font-weight: bold; }}")
@@ -162,14 +166,16 @@ class ObservationPage(QWidget):
             image_path = engagement_images.get(label, "")
             if image_path:
                 try:
-                    pixmap = QPixmap(image_path)
+                    # Use resource_path to make the path PyInstaller-safe
+                    full_image_path = resource_path(image_path)
+                    pixmap = QPixmap(full_image_path)
                     if not pixmap.isNull():
                         scaled_pixmap = pixmap.scaled(30, 30, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
                         icon = QIcon(scaled_pixmap)
                         btn.setIcon(icon)
                         btn.setIconSize(scaled_pixmap.size())
                 except Exception as e:
-                    print(f"Could not load engagement image {image_path}: {e}")
+                    print(f"Could not load engagement image {full_image_path}: {e}")
             
             # Apply color to button background
             btn.setStyleSheet(f"QPushButton {{ background-color: {engagement_color}; color: white; font-weight: bold; }}")

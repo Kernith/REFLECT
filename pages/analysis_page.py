@@ -3,6 +3,7 @@ from PyQt6.QtCore import Qt
 import pandas as pd
 import json
 from widgets.mpl_canvas import MplCanvas
+from pages.utils.paths import resource_path
 
 class AnalysisPage(QWidget):
     def __init__(self, switch_page):
@@ -34,7 +35,8 @@ class AnalysisPage(QWidget):
     def load_colors(self):
         """Load color configuration from config.json"""
         try:
-            with open("config.json", "r") as f:
+            config_path = resource_path("config.json")
+            with open(config_path, "r") as f:
                 config = json.load(f)
                 return config.get("colors", {})
         except (FileNotFoundError, json.JSONDecodeError):
