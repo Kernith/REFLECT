@@ -7,12 +7,12 @@ class HomePage(QWidget):
         layout = QVBoxLayout()
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        title = QLabel("Survey App")
+        title = QLabel("Generalized\nObservation and\nReflection\nPlatform\n")
         title.setStyleSheet("font-size: 24px; font-weight: bold;")
         layout.addWidget(title)
 
-        btn_new = QPushButton("Start New Survey")
-        btn_view = QPushButton("View Survey Data")
+        btn_new = QPushButton("Start New Observation")
+        btn_view = QPushButton("View Observation Data")
         for b in (btn_new, btn_view):
             b.setFixedHeight(40)
             layout.addWidget(b)

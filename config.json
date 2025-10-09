@@ -1,16 +1,138 @@
 {
-    "observation_buttons": [
+    "colors": {
+        "student": "#F46715",
+        "engagement": "#4169E1", 
+        "instructor": "#0C8346",
+        "comments": "#808080",
+        "carmine": "#931621"
+    },
+    "student_actions": [
         {
-            "label": ":)",
-            "text": "Positive"
+            "label": "L",
+            "text": "Student is listening",
+            "image": "images/student_listening.png"
         },
         {
-            "label": ":(", 
-            "text": "Negative"
+            "label": "Ind",
+            "text": "Student is talking",
+            "image": "images/student_talking.png"
         },
         {
-            "label": "?",
-            "text": "Uncertain"
+            "label": "AnQ",
+            "text": "Student is discussing",
+            "image": "images/student_discussing.png"
+        },
+        {
+            "label": "SQ",
+            "text": "Student is listening",
+            "image": "images/student_question.png"
+        },
+        {
+            "label": "Prd",
+            "text": "Student is working on task",
+            "image": "images/student_working.png"
+        },
+        {
+            "label": "CG",
+            "text": "Student is ",
+            "image": "images/student_group.png"
+        },
+        {
+            "label": "WG",
+            "text": "Student is ",
+            "image": "images/student_workgroup.png"
+        },
+        {
+            "label": "OG",
+            "text": "Student is ",
+            "image": "images/student_othergroup.png"
+        },
+        {
+            "label": "WC",
+            "text": "Student is ",
+            "image": "images/student_waiting.png"
+        },
+        {
+            "label": "SP",
+            "text": "Student is ",
+            "image": "images/student_speaking.png"
+        },
+        {
+            "label": "TQ",
+            "text": "Student is ",
+            "image": "images/student_tech.png"
+        },
+        {
+            "label": "W",
+            "text": "Student is ",
+            "image": "images/student_waiting.png"
         }
-    ]
+    ],
+    "instructor_actions": [
+        {
+            "label": "Lec",
+            "text": "Instructor is lecturing",
+            "image": "images/instructor_lecture.png"
+        },
+        {
+            "label": "RrW",
+            "text": "Instructor is demonstrating",
+            "image": "images/instructor_demo.png"
+        },
+        {
+            "label": "D/V",
+            "text": "Instructor is asking questions",
+            "image": "images/instructor_questions.png"
+        },
+        {
+            "label": "PQ",
+            "text": "Instructor is circulating",
+            "image": "images/instructor_circulating.png"
+        },
+        {
+            "label": "CQ",
+            "text": "Instructor is providing assistance",
+            "image": "images/instructor_assistance.png"
+        },
+        {
+            "label": "AnQ",
+            "text": "Instructor is ",
+            "image": "images/instructor_answering.png"
+        },
+        {
+            "label": "FUp",
+            "text": "Instructor is ",
+            "image": "images/instructor_followup.png"
+        },
+        {
+            "label": "Si",
+            "text": "Instructor is ",
+            "image": "images/instructor_silent.png"
+        },
+        {
+            "label": "MG",
+            "text": "Instructor is ",
+            "image": "images/instructor_managing.png"
+        },
+        {
+            "label": "1o1",
+            "text": "Instructor is ",
+            "image": "images/instructor_oneonone.png"
+        },
+        {
+            "label": "Adm",
+            "text": "Instructor is ",
+            "image": "images/instructor_admin.png"
+        },
+        {
+            "label": "W",
+            "text": "Instructor is ",
+            "image": "images/instructor_waiting.png"
+        }
+    ],
+    "engagement_images": {
+        "Low": "images/engagement_low.png",
+        "Medium": "images/engagement_medium.png",
+        "High": "images/engagement_high.png"
+    }
 }
