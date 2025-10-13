@@ -7,10 +7,10 @@ from PyQt6.QtGui import QIcon, QPixmap
 from utils.paths import resource_path
 
 class ObservationTimepointPage(QWidget):
-    def __init__(self, switch_page, get_current_config):
+    def __init__(self, switch_page, app_state):
         super().__init__()
         self.switch_page = switch_page
-        self.get_current_config = get_current_config
+        self.app_state = app_state
         self.start_time = None
         self.timer = QTimer()
         self.timer.timeout.connect(self.update_timer)
@@ -18,7 +18,10 @@ class ObservationTimepointPage(QWidget):
         
         # Load button configuration
         self.load_config()
+        self.create_ui()
 
+    def create_ui(self):
+        """Create the user interface"""
         # Main layout with three sections
         main_layout = QHBoxLayout()
         main_layout.setSpacing(20)  # Add spacing between sections (default is usually 0)
@@ -59,7 +62,7 @@ class ObservationTimepointPage(QWidget):
         button_row.addWidget(btn_stop)
         
         btn_back = QPushButton("Back to Home")
-        btn_back.clicked.connect(lambda: switch_page(0))
+        btn_back.clicked.connect(lambda: self.switch_page(0))
         button_row.addWidget(btn_back)
         
         control_layout.addLayout(button_row)
@@ -70,11 +73,11 @@ class ObservationTimepointPage(QWidget):
         final_layout.addLayout(control_layout)
         
         self.setLayout(final_layout)
-
+    
     def load_config(self):
         """Load button configuration from the global config"""
         try:
-            self.config = self.get_current_config()
+            self.config = self.app_state.get_current_config()
         except Exception as e:
             QMessageBox.critical(self, "Error", "Could not load configuration.")
             self.switch_page(0)

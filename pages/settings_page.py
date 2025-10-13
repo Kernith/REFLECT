@@ -5,10 +5,10 @@ import json
 from utils.paths import resource_path
 
 class SettingsPage(QWidget):
-    def __init__(self, switch_page, update_config):
+    def __init__(self, switch_page, app_state):
         super().__init__()
         self.switch_page = switch_page
-        self.update_config = update_config
+        self.app_state = app_state
         self.config_data = {}
         self.current_config_index = 0
         
@@ -54,6 +54,8 @@ class SettingsPage(QWidget):
         self.populate_config_combo()
         self.config_combo.currentIndexChanged.connect(self.on_config_changed)
         config_layout.addWidget(self.config_combo)
+        
+        self.set_current_config_selection()
         
         # Config description
         self.description_label = QLabel()
@@ -101,6 +103,18 @@ class SettingsPage(QWidget):
         for i, config in enumerate(configs):
             self.config_combo.addItem(config.get("name", f"Config {i+1}"))
     
+    def set_current_config_selection(self):
+        """Set the dropdown to show the currently active configuration"""
+        current_config = self.app_state.get_current_config()
+        current_name = current_config.get("name", "")
+        
+        # Find the index of the current config in the dropdown
+        for i in range(self.config_combo.count()):
+            if self.config_combo.itemText(i) == current_name:
+                self.config_combo.setCurrentIndex(i)
+                self.current_config_index = i
+                break
+    
     def on_config_changed(self, index):
         """Handle configuration selection change"""
         self.current_config_index = index
@@ -114,11 +128,9 @@ class SettingsPage(QWidget):
             
         current_config = configs[self.current_config_index]
         
-        # Update description
+        # Update description and details
         description = current_config.get("description", "No description available.")
         self.description_label.setText(f"{description}")
-        
-        # Update details
         details = self.format_config_details(current_config)
         self.details_text.setPlainText(details)
     
@@ -160,7 +172,8 @@ class SettingsPage(QWidget):
         return "\n".join(details)
     
     def save_settings(self):
-        """Save the current settings and update the global config"""
-        # Update the global configuration
-        self.update_config(self.current_config_index)
+        """Save the current settings and update the app state"""
+        # Update the app state with the new configuration
+        self.app_state.update_config(self.current_config_index)
+        self.switch_page(0)
         

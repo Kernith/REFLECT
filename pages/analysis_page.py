@@ -6,12 +6,13 @@ from widgets.mpl_canvas import MplCanvas
 from utils.paths import resource_path
 
 class AnalysisPage(QWidget):
-    def __init__(self, switch_page):
+    def __init__(self, switch_page, app_state):
         super().__init__()
         self.switch_page = switch_page
+        self.app_state = app_state
         
-        # Load color configuration
-        self.colors = self.load_colors()
+        # Get color configuration from app state
+        self.colors = self.get_colors_from_app_state()
 
         layout = QVBoxLayout()
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -32,21 +33,26 @@ class AnalysisPage(QWidget):
 
         self.setLayout(layout)
 
-    def load_colors(self):
-        """Load color configuration from config.json"""
-        try:
-            config_path = resource_path("config.json")
-            with open(config_path, "r") as f:
-                config = json.load(f)
-                return config.get("colors", {})
-        except (FileNotFoundError, json.JSONDecodeError):
-            # Fallback colors if config is not available
-            return {
+    def get_colors_from_app_state(self):
+        """Get color configuration from app state"""
+        current_config = self.app_state.get_current_config()
+        colors = current_config.get("colors", {})
+        
+        # If no colors in current config, try to get from app settings
+        if not colors:
+            app_settings = self.app_state.get_app_settings()
+            colors = app_settings.get("colors", {})
+        
+        # Fallback colors if no colors are available
+        if not colors:
+            colors = {
                 "student": "#FFA500",
                 "engagement": "#4169E1", 
                 "instructor": "#32CD32",
                 "comments": "#808080"
             }
+        
+        return colors
 
     def get_bar_color(self, category):
         """Determine the color for a response based on its category"""

@@ -7,10 +7,10 @@ from PyQt6.QtGui import QIcon, QPixmap
 from utils.paths import resource_path
 
 class ObservationIntervalPage(QWidget):
-    def __init__(self, switch_page, get_current_config):
+    def __init__(self, switch_page, app_state):
         super().__init__()
         self.switch_page = switch_page
-        self.get_current_config = get_current_config
+        self.app_state = app_state
         self.start_time = None
         self.timer = QTimer()
         self.timer.timeout.connect(self.update_timer)
@@ -23,10 +23,13 @@ class ObservationIntervalPage(QWidget):
         
         # Load button configuration
         self.load_config()
+        self.create_ui()
 
+    def create_ui(self):
+        """Create the user interface"""
         # Main layout with three sections
         main_layout = QHBoxLayout()
-        main_layout.setSpacing(20)  # Add spacing between sections (default is usually 0)
+        main_layout.setSpacing(20)
         
         # Left section - Student Actions
         left_section = self.create_student_actions_section()
@@ -64,7 +67,7 @@ class ObservationIntervalPage(QWidget):
         button_row.addWidget(btn_stop)
         
         btn_back = QPushButton("Back to Home")
-        btn_back.clicked.connect(lambda: switch_page(0))
+        btn_back.clicked.connect(lambda: self.switch_page(0))
         button_row.addWidget(btn_back)
         
         control_layout.addLayout(button_row)
@@ -75,11 +78,11 @@ class ObservationIntervalPage(QWidget):
         final_layout.addLayout(control_layout)
         
         self.setLayout(final_layout)
-
+    
     def load_config(self):
         """Load button configuration from the global config"""
         try:
-            self.config = self.get_current_config()
+            self.config = self.app_state.get_current_config()
             # Get timer interval from config
             self.timer_interval = self.config.get("timer_interval", 120) * 1000  # Convert to milliseconds
         except Exception as e:
@@ -91,7 +94,7 @@ class ObservationIntervalPage(QWidget):
                 "engagement_images": [],
                 "colors": {
                     "student": "#F46715",
-                    "engagement": "#4169E1", 
+                    "engagement": "#4169E1",
                     "instructor": "#0C8346",
                     "comments": "#808080",
                     "carmine": "#931621"
