@@ -333,47 +333,47 @@
                     "image": "images/student_listening.png"
                 },
                 {
-                    "label": "Thinking/Problem Solving",
+                    "label": "Thinking/Problem\nSolving",
                     "text": "Individual thinking / problem solving (when explicitly prompted)",
                     "image": "images/student_talking.png"
                 },
                 {
-                    "label": "Answering Question",
+                    "label": "Answering\nQuestion",
                     "text": "Answering instructor's question",
                     "image": "images/student_discussing.png"
                 },
                 {
-                    "label": "Asking Question",
+                    "label": "Asking\nQuestion",
                     "text": "Asking a question",
                     "image": "images/student_question.png"
                 },
                 {
-                    "label": "Predicting outcome",
+                    "label": "Predicting\nOutcome",
                     "text": "Making a prediction about an outcome of a demo or experiment",
                     "image": "images/student_working.png"
                 },
                 {
-                    "label": "Discussing Question",
+                    "label": "Discussing\nQuestion",
                     "text": "Discussing clicker question (CQ) in groups of 2 or more students",
                     "image": "images/student_group.png"
                 },
                 {
-                    "label": "Group Worksheet",
+                    "label": "Group\nWorksheet",
                     "text": "Working on worksheet in groups",
                     "image": "images/student_workgroup.png"
                 },
                 {
-                    "label": "Group Activities",
+                    "label": "Group\nActivities",
                     "text": "Other group activities (e.g., responding to instructor question)",
                     "image": "images/student_othergroup.png"
                 },
                 {
-                    "label": "Class Discussion",
+                    "label": "Class\nDiscussion",
                     "text": "Engaged in whole class discussion (offering explanations, opinions, etc.)",
                     "image": "images/student_waiting.png"
                 },
                 {
-                    "label": "Student Presentation",
+                    "label": "Student\nPresentation",
                     "text": "Giving a student presentation",
                     "image": "images/student_speaking.png"
                 },
@@ -395,7 +395,7 @@
                     "image": "images/instructor_lecture.png"
                 },
                 {
-                    "label": "Real-time writing",
+                    "label": "Real-time\nWriting",
                     "text": "Real-time writing on board, document, or projector",
                     "image": "images/instructor_demo.png"
                 },
@@ -405,17 +405,17 @@
                     "image": "images/instructor_questions.png"
                 },
                 {
-                    "label": "Posing Question",
+                    "label": "Posing\nQuestion",
                     "text": "Posing non-rhetorical, non-clicker question",
                     "image": "images/instructor_circulating.png"
                 },
                 {
-                    "label": "Asking Clicker Question",
+                    "label": "Asking\nClicker\nQuestion",
                     "text": "Asking a clicker question (mark entire time clicker question used)",
                     "image": "images/instructor_assistance.png"
                 },
                 {
-                    "label": "Answering Question",
+                    "label": "Answering\nQuestion",
                     "text": "Listening to and answering student questions with entire class listening",
                     "image": "images/instructor_answering.png"
                 },
@@ -430,7 +430,7 @@
                     "image": "images/instructor_silent.png"
                 },
                 {
-                    "label": "Moving through class",
+                    "label": "Moving\nThrough\nClass",
                     "text": "Moving through class, guiding work during active learning tasks",
                     "image": "images/instructor_managing.png"
                 },
