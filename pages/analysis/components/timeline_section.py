@@ -1,7 +1,7 @@
 import pandas as pd
 from PyQt6.QtWidgets import QFrame, QVBoxLayout, QLabel
 from PyQt6.QtGui import QFont
-from services.analysis.insights_generator import InsightsGenerator
+from backend.analysis.insights_generator import InsightsGenerator
 
 
 class TimelineSection:

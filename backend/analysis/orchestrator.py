@@ -1,18 +1,18 @@
 import pandas as pd
 from typing import Dict, Any, List
-from services.analysis.data_processor import DataProcessor, DataLoadResult
-from services.analysis.statistics_calculator import StatisticsCalculator
-from services.analysis.insights_generator import InsightsGenerator
-from services.visualization.color_manager import ColorManager
+from .statistics_calculator import StatisticsCalculator
+from .insights_generator import InsightsGenerator
+from ..data.processors.data_processor import DataProcessor, DataLoadResult
+from ..visualization.color_manager import ColorManager
 
 
 class AnalysisOrchestrator:
     """Orchestrates analysis services and provides unified interface"""
     
-    def __init__(self, color_config):
+    def __init__(self, color_config, config_manager=None):
         """Initialize with color configuration"""
         self.color_manager = ColorManager(color_config)
-        self.data_processor = DataProcessor()
+        self.data_processor = DataProcessor(config_manager)
         self.statistics_calculator = StatisticsCalculator()
         self.insights_generator = InsightsGenerator()
         self.df = None

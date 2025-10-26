@@ -3,17 +3,18 @@ from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton,
                             QFrame, QTextEdit, QSplitter)
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont
-from pages.analysis.services.analysis_orchestrator import AnalysisOrchestrator
-from pages.analysis.services.pdf_export_service import PDFExportService
+from backend.analysis.orchestrator import AnalysisOrchestrator
+from backend.export.pdf_exporter import PDFExporter
+from backend.analysis.statistics_calculator import StatisticsCalculator
+from backend.analysis.insights_generator import InsightsGenerator
+from backend.visualization.plot_factory import PlotFactory
+from gui.pyqt6.adapters.plot_adapter import PyQt6PlotAdapter
 from pages.analysis.components.summary_section import SummarySection
 from pages.analysis.components.statistics_section import StatisticsSection
 from pages.analysis.components.timeline_section import TimelineSection
 from pages.analysis.components.comments_section import CommentsSection
 from pages.analysis.components.time_series_section import TimeSeriesSection
 from pages.analysis.components.distribution_section import DistributionSection
-from services.analysis.statistics_calculator import StatisticsCalculator
-from services.analysis.insights_generator import InsightsGenerator
-from services.visualization.plot_factory import PlotFactory
 
 class AnalysisPage(QWidget):
     def __init__(self, switch_page, app_state):
@@ -26,17 +27,17 @@ class AnalysisPage(QWidget):
         colors = self.get_colors_from_app_state()
         
         # Initialize orchestrator and services
-        self.orchestrator = AnalysisOrchestrator(colors)
+        self.orchestrator = AnalysisOrchestrator(colors, self.app_state.config_manager)
         self.statistics_calculator = StatisticsCalculator()
         self.insights_generator = InsightsGenerator()
         self.plot_factory = PlotFactory()
+        self.plot_adapter = PyQt6PlotAdapter(self.plot_factory)
         
         # Initialize PDF export service
-        self.pdf_export_service = PDFExportService(
+        self.pdf_exporter = PDFExporter(
             self.statistics_calculator,
             self.insights_generator,
-            self.plot_factory,
-            self.orchestrator.get_color_manager()
+            self.plot_factory
         )
         
         # Initialize UI components
@@ -44,8 +45,8 @@ class AnalysisPage(QWidget):
         self.statistics_section = StatisticsSection(self.statistics_calculator)
         self.timeline_section = TimelineSection(self.insights_generator)
         self.comments_section = CommentsSection()
-        self.time_series_section = TimeSeriesSection(self.plot_factory, self.orchestrator.get_color_manager())
-        self.distribution_section = DistributionSection(self.plot_factory, self.orchestrator.get_color_manager())
+        self.time_series_section = TimeSeriesSection(self.plot_adapter, self.orchestrator.get_color_manager())
+        self.distribution_section = DistributionSection(self.plot_adapter, self.orchestrator.get_color_manager())
 
         # Create main layout
         main_layout = QVBoxLayout()
@@ -167,8 +168,8 @@ class AnalysisPage(QWidget):
             return
             
         # Use PDF export service
-        success = self.pdf_export_service.export_analysis_report(
-            self.df, path, self.label.text()
+        success = self.pdf_exporter.export_analysis_report(
+            self.df, path, self.label.text(), self.orchestrator.get_color_manager()
         )
         
         if success:

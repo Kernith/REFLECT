@@ -26,7 +26,7 @@ class ObservationIntervalPage(BaseObservationPage):
 
     def toggle_button(self, category, label, checked):
         """Handle button toggle state"""
-        if not self.start_time:
+        if not self.observation_collector.is_observation_active():
             return
         
         key = f"{category}_{label}"
@@ -39,7 +39,7 @@ class ObservationIntervalPage(BaseObservationPage):
 
     def toggle_engagement_button(self, label, checked, clicked_button):
         """Handle engagement button toggle with radio button behavior"""
-        if not self.start_time:
+        if not self.observation_collector.is_observation_active():
             return
         
         if checked:
@@ -73,10 +73,8 @@ class ObservationIntervalPage(BaseObservationPage):
 
     def save_interval_data(self):
         """Save data for all toggled buttons and reset them"""
-        if not self.start_time:
+        if not self.observation_collector.is_observation_active():
             return
-        
-        current_time = get_current_time(self)
         
         # Save data for all toggled buttons
         for key, is_toggled in self.button_states.items():
@@ -89,8 +87,8 @@ class ObservationIntervalPage(BaseObservationPage):
                 else:  # Student and Instructor categories
                     value = 1
                 
-                self.responses.append((current_time, category, label, value))
-                print(f"Interval save: {category} - {label} (value: {value}) at {current_time:.1f}s")
+                self.observation_collector.record_response(category, label, value)
+                print(f"Interval save: {category} - {label} (value: {value})")
         
         # Reset all buttons
         self.reset_all_buttons()
@@ -107,19 +105,11 @@ class ObservationIntervalPage(BaseObservationPage):
 
     def stop_observation(self):
         """Override to handle interval timer and save remaining data"""
-        self.timer.stop()
+        self.timer_adapter.stop()
         self.interval_timer.stop()
         
         # Save any remaining toggled buttons before stopping
-        if self.start_time:
-            current_time = get_current_time(self)
-            # Calculate next multiple of timer_interval (convert from ms to seconds)
-            timer_interval_seconds = self.timer_interval / 1000
-            if current_time % timer_interval_seconds == 0:
-                adjusted_time = current_time
-            else:
-                adjusted_time = ((current_time // timer_interval_seconds) + 1) * timer_interval_seconds
-            
+        if self.observation_collector.is_observation_active():
             for key, is_toggled in self.button_states.items():
                 if is_toggled:
                     category, label = key.split("_", 1)
@@ -129,14 +119,14 @@ class ObservationIntervalPage(BaseObservationPage):
                         value = engagement_values.get(label, 1)
                     else:  # Student and Instructor categories
                         value = 1
-                    self.responses.append((adjusted_time, category, label, value))
+                    self.observation_collector.record_response(category, label, value)
         
         # Call parent stop_observation to handle the rest
         super().stop_observation()
 
     def handle_back_to_home(self):
         """Handle back to home button with confirmation if timer is running"""
-        if self.start_time:
+        if self.observation_collector.is_observation_active():
             # Timer is running, show confirmation dialog
             reply = QMessageBox.question(
                 self, 
@@ -147,9 +137,9 @@ class ObservationIntervalPage(BaseObservationPage):
             )
             if reply == QMessageBox.StandardButton.Yes:
                 # Stop the observation and go back
-                self.timer.stop()
+                self.timer_adapter.stop()
                 self.interval_timer.stop()
-                self.start_time = None
+                self.observation_collector.stop_observation()
                 self.switch_page(0)
         else:
             # Timer is not running, go back directly

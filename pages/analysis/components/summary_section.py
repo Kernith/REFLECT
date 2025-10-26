@@ -1,7 +1,7 @@
 import pandas as pd
 from PyQt6.QtWidgets import QFrame, QVBoxLayout, QLabel
 from PyQt6.QtGui import QFont
-from services.analysis.statistics_calculator import StatisticsCalculator
+from backend.analysis.statistics_calculator import StatisticsCalculator
 
 
 class SummarySection:

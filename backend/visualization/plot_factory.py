@@ -2,22 +2,16 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
-from widgets.mpl_canvas import MplCanvas
-from services.visualization.color_manager import ColorManager
+from .color_manager import ColorManager
 
 
 class PlotFactory:
-    """Factory class for creating matplotlib plots"""
+    """Factory class for creating matplotlib plots - returns pure Figure objects"""
     
-    def create_time_series_plot(self, df, color_manager: ColorManager, for_pdf=False):
+    def create_time_series_plot(self, df, color_manager: ColorManager) -> Figure:
         """Create time series scatter plot with moving average for engagement"""
-        if for_pdf:
-            fig = Figure(figsize=(8.5, 11.0))
-            ax = fig.add_subplot(111)
-        else:
-            canvas = MplCanvas()
-            canvas.fig.set_size_inches(10, 6)
-            ax = canvas.ax
+        fig = Figure(figsize=(10, 6))
+        ax = fig.add_subplot(111)
         
         # Create scatter plot
         for category in df["category"].unique():
@@ -68,27 +62,16 @@ class PlotFactory:
         ax.set_ylabel("Response")
         ax.set_title("Survey Responses Over Time")
         ax.grid(True, alpha=0.3)
+        ax.legend()
         
-        if for_pdf:
-            return fig
-        else:
-            canvas.draw()
-            return canvas
+        return fig
 
-    def create_category_distribution_plot(self, df, color_manager: ColorManager, for_pdf=False):
+    def create_category_distribution_plot(self, df, color_manager: ColorManager) -> Figure:
         """Create three pie charts for engagement, instructor, and student actions"""
-        if for_pdf:
-            fig = Figure(figsize=(8.5, 11.0))
-            ax1 = fig.add_subplot(131)  # Engagement
-            ax2 = fig.add_subplot(132)  # Instructor
-            ax3 = fig.add_subplot(133)  # Student
-        else:
-            canvas = MplCanvas()
-            canvas.fig.set_size_inches(12, 8)
-            fig = canvas.fig
-            ax1 = fig.add_subplot(131)  # Engagement
-            ax2 = fig.add_subplot(132)  # Instructor
-            ax3 = fig.add_subplot(133)  # Student
+        fig = Figure(figsize=(12, 8))
+        ax1 = fig.add_subplot(131)  # Engagement
+        ax2 = fig.add_subplot(132)  # Instructor
+        ax3 = fig.add_subplot(133)  # Student
         
         # Filter data for each category
         engagement_data = df[df['category'] == 'Engagement']
@@ -137,8 +120,4 @@ class PlotFactory:
             ax3.text(0.5, 0.5, 'No Student Data', ha='center', va='center', transform=ax3.transAxes)
             ax3.set_title('Student Actions')
         
-        if for_pdf:
-            return fig
-        else:
-            canvas.draw()
-            return canvas
+        return fig

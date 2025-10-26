@@ -1,7 +1,6 @@
 import pandas as pd
 import json
 from typing import Dict, Any, Optional
-from core.util_functions import resource_path
 
 
 class DataLoadResult:
@@ -15,16 +14,20 @@ class DataLoadResult:
 class DataProcessor:
     """Service for data loading, validation, and ordering"""
     
-    def __init__(self):
+    def __init__(self, config_manager=None):
         self._config_ordering = None
+        self.config_manager = config_manager
         self._load_config_ordering()
     
     def _load_config_ordering(self):
         """Load category and response ordering from config.json"""
         try:
-            config_path = resource_path("config.json")
-            with open(config_path, "r") as f:
-                config = json.load(f)
+            if self.config_manager:
+                config = self.config_manager.load_config()
+            else:
+                # Fallback to direct file loading
+                with open("config.json", "r") as f:
+                    config = json.load(f)
             
             # Get category order from colors section
             category_order = list(config.get("colors", {}).keys())

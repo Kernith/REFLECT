@@ -2,9 +2,9 @@ import pandas as pd
 from matplotlib.backends.backend_pdf import PdfPages
 from matplotlib.figure import Figure
 from typing import Optional
-from services.analysis.statistics_calculator import StatisticsCalculator
-from services.analysis.insights_generator import InsightsGenerator
-from services.visualization.plot_factory import PlotFactory
+from ..analysis.statistics_calculator import StatisticsCalculator
+from ..analysis.insights_generator import InsightsGenerator
+from ..visualization.plot_factory import PlotFactory
 
 
 class PDFExporter:
@@ -96,13 +96,13 @@ class PDFExporter:
     
     def _create_time_series_page(self, pdf, df: pd.DataFrame, fig_width: float, fig_height: float, color_manager):
         """Create time series plot page"""
-        fig = self.plot_factory.create_time_series_plot(df, color_manager, for_pdf=True)
+        fig = self.plot_factory.create_time_series_plot(df, color_manager)
         pdf.savefig(fig, bbox_inches='tight')
         fig.clear()
     
     def _create_category_distribution_page(self, pdf, df: pd.DataFrame, fig_width: float, fig_height: float, color_manager):
         """Create category distribution page"""
-        fig = self.plot_factory.create_category_distribution_plot(df, color_manager, for_pdf=True)
+        fig = self.plot_factory.create_category_distribution_plot(df, color_manager)
         pdf.savefig(fig, bbox_inches='tight')
         fig.clear()
     

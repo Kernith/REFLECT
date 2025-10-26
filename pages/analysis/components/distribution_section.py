@@ -1,15 +1,15 @@
 import pandas as pd
 from PyQt6.QtWidgets import QFrame, QVBoxLayout, QLabel
 from PyQt6.QtGui import QFont
-from services.visualization.plot_factory import PlotFactory
-from services.visualization.color_manager import ColorManager
+from gui.pyqt6.adapters.plot_adapter import PyQt6PlotAdapter
+from backend.visualization.color_manager import ColorManager
 
 
 class DistributionSection:
     """Component for creating category distribution section"""
     
-    def __init__(self, plot_factory: PlotFactory, color_manager: ColorManager):
-        self.plot_factory = plot_factory
+    def __init__(self, plot_adapter: PyQt6PlotAdapter, color_manager: ColorManager):
+        self.plot_adapter = plot_adapter
         self.color_manager = color_manager
     
     def create_section(self, df: pd.DataFrame) -> QFrame:
@@ -21,8 +21,8 @@ class DistributionSection:
         title.setFont(QFont("Arial", 14, QFont.Weight.Bold))
         plot_layout.addWidget(title)
         
-        # Create the plot using plot factory
-        canvas = self.plot_factory.create_category_distribution_plot(df, self.color_manager, for_pdf=False)
+        # Create the plot using plot adapter
+        canvas = self.plot_adapter.create_category_distribution_canvas(df, self.color_manager)
         plot_layout.addWidget(canvas)
         
         plot_frame.setLayout(plot_layout)

@@ -1,5 +1,6 @@
 import matplotlib.colors as mcolors
 
+
 class ColorManager:
     """Centralized color management for the application"""
     

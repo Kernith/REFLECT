@@ -5,13 +5,17 @@ from pages.observation.interval_observation_page import ObservationIntervalPage
 from pages.observation.timepoint_observation_page import ObservationTimepointPage
 from pages.analysis.analysis_page import AnalysisPage
 from pages.settings_page import SettingsPage
-from core.app_state import AppState
+from backend.config.config_manager import ConfigManager
+from backend.config.app_state import AppState
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.stack = QStackedWidget()
-        self.app_state = AppState()
+        
+        # Initialize configuration manager and app state
+        self.config_manager = ConfigManager()
+        self.app_state = AppState(self.config_manager)
         
         self.resize(int(1532/1.25), int(659/1.25))
 
