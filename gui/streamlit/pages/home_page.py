@@ -11,6 +11,8 @@ def render_home_page():
     # set custom width in css
     st.markdown("""
     <style>
+    /* narrow except on mobile devices */
+    @media screen and (min-width: 769px) {
     .stApp {
         max-width: 50%;
         margin: 0 auto;
@@ -23,7 +25,7 @@ def render_home_page():
         st.markdown("# <span style='color: var(--highlight-color);'>REFLECT</span>", unsafe_allow_html=True)
         st.markdown("### <span style='color: var(--highlight-color);'>R</span>esearch & <span style='color: var(--highlight-color);'>E</span>valuation <span style='color: var(--highlight-color);'>F</span>ramework for <span style='color: var(--highlight-color);'>L</span>earning, <span style='color: var(--highlight-color);'>E</span>ngagement, <span style='color: var(--highlight-color);'>C</span>ollaboration, and <span style='color: var(--highlight-color);'>T</span>racking", unsafe_allow_html=True)
     with icon_col:
-        st.image("images/hero_image.png", use_container_width=True)
+        st.image("images/hero_image.png", use_container_width=False)
         
     st.markdown("---")
     
@@ -103,4 +105,3 @@ def render_home_page():
         4. **Save Data**: Download your observations as CSV files
         5. **Analyze Results**: Upload CSV files to view plots and statistics
         """)
-

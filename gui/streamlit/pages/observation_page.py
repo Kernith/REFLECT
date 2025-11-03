@@ -6,6 +6,7 @@ from backend.data.collectors.timer_service import TimerService
 from backend.data.exporters.csv_exporter import CSVExporter
 from gui.streamlit.adapters.timer_adapter import StreamlitTimerAdapter
 import streamlit.components.v1 as components
+from streamlit_autorefresh import st_autorefresh
 
 # Constants
 CATEGORY_PREFIXES = {
@@ -77,22 +78,6 @@ def _handle_periodic_interval_saving(observation_type, timer_adapter, collector,
             save_interval_data(collector, config)
             st.session_state.last_interval_save = current_time
             st.rerun()
-
-
-def _render_action_sections(config, collector, observation_type):
-    """Render student, engagement, and instructor action sections"""
-    student_col, engagement_col, instructor_col = st.columns([3, 2, 3])
-
-    with student_col:
-        render_student_actions(config, collector, observation_type)
-    
-    with engagement_col:
-        render_engagement_section(config, collector, observation_type)
-        st.markdown("---")
-        render_comments_section(collector)
-    
-    with instructor_col:
-        render_instructor_actions(config, collector, observation_type)
 
 
 def _render_timer_display(timer_adapter, has_saved_data, container=None):
@@ -277,32 +262,6 @@ def _render_back_button(collector, timer_adapter):
                 st.session_state.page = "home"
                 st.rerun()
 
-def render_observation_page():
-    """Render the observation page"""
-    # Get observation type (interval, timepoint, etc.)
-    observation_type = st.session_state.get('observation_type', 'interval')
-    
-    # Get config from session state
-    config = st.session_state.get('current_config', {})
-    
-    # Initialize services
-    _initialize_services(config)
-    
-    collector = st.session_state.observation_collector
-    timer_adapter = st.session_state.timer_adapter
-    
-    # Handle periodic interval saving for interval mode
-    _handle_periodic_interval_saving(observation_type, timer_adapter, collector, config)
-    
-    # Render action sections
-    _render_action_sections(config, collector, observation_type)
-    
-    st.markdown("---")
-
-    # Timer display, controls, and back button
-    has_saved_data = st.session_state.get('show_download', False) and st.session_state.get('csv_data', '')
-    render_timer_controls(timer_adapter, collector, observation_type, config, has_saved_data)
-
 
 def _render_toggle_button(key, label, text):
     """Render a toggle button for interval mode"""
@@ -344,28 +303,6 @@ def _render_engagement_toggle_button(key, label, text):
         # Toggle the current button (but if we just cleared others, this will set it to True)
         st.session_state.button_states[key] = not checked
         st.rerun()
-
-
-def _render_button_grid(actions, cols_per_row, category_key, prefix, observation_type, collector):
-    """Generic function to render action buttons for any category"""
-    if not actions:
-        st.info(f"No {category_key.replace('_', ' ')} configured")
-        return
-    
-    cols = st.columns(cols_per_row, gap="small")
-    
-    for i, action in enumerate(actions):
-        label = action['label']
-        text = action.get('text', '')
-        key = f"{prefix}_{label}"
-        col_index = i % cols_per_row
-        
-        with cols[col_index]:
-            if observation_type == "interval":
-                _render_toggle_button(key, label, text)
-            else:
-                category = CATEGORY_PREFIXES.get(prefix, category_key)
-                _render_click_button(key, label, text, category, collector)
 
 
 def _render_engagement_button_grid(actions, cols_per_row, category_key, prefix, observation_type, collector):
@@ -440,14 +377,44 @@ def render_student_actions(config, collector, observation_type):
     """Render student actions section"""
     st.markdown("### Student Actions")
     student_actions = config.get('student_actions', [])
-    _render_button_grid(student_actions, 4, "student_actions", "student", observation_type, collector)
+    
+    if not student_actions:
+        st.info("No student actions configured")
+        return
+    
+    with st.container(horizontal=True):
+        for action in student_actions:
+            label = action['label']
+            text = action.get('text', '')
+            key = f"student_{label}"
+            
+            if observation_type == "interval":
+                _render_toggle_button(key, label, text)
+            else:
+                category = CATEGORY_PREFIXES.get("student", "student_actions")
+                _render_click_button(key, label, text, category, collector)
 
 
 def render_instructor_actions(config, collector, observation_type):
     """Render instructor actions section"""
     st.markdown("### Instructor Actions")
     instructor_actions = config.get('instructor_actions', [])
-    _render_button_grid(instructor_actions, 4, "instructor_actions", "instructor", observation_type, collector)
+    
+    if not instructor_actions:
+        st.info("No instructor actions configured")
+        return
+    
+    with st.container(horizontal=True):
+        for action in instructor_actions:
+            label = action['label']
+            text = action.get('text', '')
+            key = f"instructor_{label}"
+            
+            if observation_type == "interval":
+                _render_toggle_button(key, label, text)
+            else:
+                category = CATEGORY_PREFIXES.get("instructor", "instructor_actions")
+                _render_click_button(key, label, text, category, collector)
 
 
 def render_engagement_section(config, collector, observation_type):
@@ -506,3 +473,45 @@ def create_csv_data_with_metadata(responses, metadata):
     writer.writerows(responses)
     
     return output.getvalue()
+
+
+def render_observation_page():
+    """Render the observation page"""
+    # Get observation type (interval, timepoint, etc.)
+    observation_type = st.session_state.get('observation_type', 'interval')
+    
+    # Get config from session state
+    config = st.session_state.get('current_config', {})
+    
+    # Initialize services
+    _initialize_services(config)
+    
+    collector = st.session_state.observation_collector
+    timer_adapter = st.session_state.timer_adapter
+    
+    # Auto-refresh the page every timer_interval seconds while timer is running
+    if timer_adapter.is_running():
+        timer_interval = config.get('timer_interval', DEFAULT_TIMER_INTERVAL)
+        # Convert seconds to milliseconds for st_autorefresh
+        refresh_interval_ms = timer_interval * 1000
+        st_autorefresh(interval=refresh_interval_ms, key="timer_autorefresh")
+    
+    # Handle periodic interval saving for interval mode
+    _handle_periodic_interval_saving(observation_type, timer_adapter, collector, config)
+    
+    # Render action sections
+    student_col, engagement_col, instructor_col = st.columns([3, 2, 3])
+    with student_col:
+        render_student_actions(config, collector, observation_type)
+    with engagement_col:
+        render_engagement_section(config, collector, observation_type)
+        st.markdown("---")
+        render_comments_section(collector)
+    with instructor_col:
+        render_instructor_actions(config, collector, observation_type)
+
+    st.markdown("---")
+
+    # Timer display, controls, and back button
+    has_saved_data = st.session_state.get('show_download', False) and st.session_state.get('csv_data', '')
+    render_timer_controls(timer_adapter, collector, observation_type, config, has_saved_data)
