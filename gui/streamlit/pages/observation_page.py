@@ -195,6 +195,17 @@ def _render_start_button(collector, timer_adapter):
         st.rerun()
 
 
+def _render_manual_save_button(observation_type, timer_adapter, collector, config):
+    """Render manual save button for interval mode"""
+    if observation_type == "interval" and timer_adapter.is_running() and collector.is_observation_active():
+        if st.button("Save Interval", help="Manually save current interval data and reset button states"):
+            current_time = time.time()
+            save_interval_data(collector, config)
+            st.session_state.last_interval_save = current_time
+            st.success("Interval data saved and button states reset!")
+            st.rerun()
+
+
 def render_timer_controls(timer_adapter, collector, observation_type, config, has_saved_data):
     """Render timer display, control buttons, and back button"""
     col1, col2, col3, col4, col5 = st.columns([3, 1, 1, 1, 3])
@@ -219,6 +230,13 @@ def render_timer_controls(timer_adapter, collector, observation_type, config, ha
     
     with col4:
         _render_back_button(collector, timer_adapter)
+    
+    # Add manual save button below timer controls for interval mode
+    if observation_type == "interval" and timer_adapter.is_running() and collector.is_observation_active():
+        st.markdown("---")
+        col_save1, col_save2, col_save3 = st.columns([1, 1, 1])
+        with col_save2:
+            _render_manual_save_button(observation_type, timer_adapter, collector, config)
 
 
 def _render_back_button(collector, timer_adapter):
