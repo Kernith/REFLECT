@@ -25,7 +25,7 @@ def render_home_page():
         st.markdown("# <span style='color: var(--highlight-color);'>REFLECT</span>", unsafe_allow_html=True)
         st.markdown("### <span style='color: var(--highlight-color);'>R</span>esearch & <span style='color: var(--highlight-color);'>E</span>valuation <span style='color: var(--highlight-color);'>F</span>ramework for <span style='color: var(--highlight-color);'>L</span>earning, <span style='color: var(--highlight-color);'>E</span>ngagement, <span style='color: var(--highlight-color);'>C</span>ollaboration, and <span style='color: var(--highlight-color);'>T</span>racking", unsafe_allow_html=True)
     with icon_col:
-        st.image("images/hero_image.png", use_container_width=False)
+        st.image("images/hero_image.png", width='content')
         
     st.markdown("---")
     
@@ -33,7 +33,7 @@ def render_home_page():
     left_col, right_col = st.columns([1, 2])
     
     with left_col:
-        if st.button(f"Start Observation ({current_config.get('name', 'Unknown')})", use_container_width=True, type="primary"):
+        if st.button(f"Start Observation ({current_config.get('name', 'Unknown')})", width='stretch', type="primary"):
             st.session_state.page = "observation"
             st.session_state.observation_type = timer_method
             st.rerun()
@@ -85,11 +85,11 @@ def render_home_page():
             else:
                 st.error("Configuration system not initialized")
         
-        if st.button("Data Analysis", use_container_width=True, type="primary"):
+        if st.button("Data Analysis", width='stretch', type="primary"):
             st.session_state.page = "analysis"
             st.rerun()
         
-        if st.button("Protocol Information", use_container_width=True, type="primary"):
+        if st.button("Protocol Information", width='stretch', type="primary"):
             st.session_state.page = "settings"
             st.rerun()
 

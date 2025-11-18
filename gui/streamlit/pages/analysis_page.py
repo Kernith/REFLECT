@@ -227,7 +227,7 @@ def display_statistics_table(df, orchestrator):
     
     # Convert to DataFrame for better display
     stats_df = pd.DataFrame(stats)
-    st.dataframe(stats_df, use_container_width=True)
+    st.dataframe(stats_df, width='stretch')
 
 
 def display_insights(df, orchestrator):
