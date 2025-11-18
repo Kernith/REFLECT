@@ -308,7 +308,7 @@ class BaseObservationPage(QWidget):
         """Save the current comment and clear the field"""
         comment = self.comment_field.toPlainText().strip()
         if comment:
-            self.record_response("Comment", comment)  # The value will be set automatically in record_response
+            self.record_response("Comment", "Comment", comment)
             self.comment_field.clear()
 
     def start_observation(self):
